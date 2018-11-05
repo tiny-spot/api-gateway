@@ -3,6 +3,8 @@ package com.tiny.spot.gateway;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.alibaba.fastjson.JSON;
+
 @SuppressWarnings("all")
 public class DefaultApigatewayInvoker implements ApiGatewayInvoker {
 
@@ -11,13 +13,23 @@ public class DefaultApigatewayInvoker implements ApiGatewayInvoker {
 		ParameterizedType parameterizedType = (ParameterizedType) request.getClass().getGenericSuperclass();
 		Type actualTypeArg = parameterizedType.getActualTypeArguments()[0];
 		try {
-			BaseResponse baseResponse = (BaseResponse) Class.forName(actualTypeArg.getTypeName()).newInstance();
-			baseResponse.setSuccess(true);
-			return (T) baseResponse;
-		} catch (Exception e) {
-			e.printStackTrace();
+			String jsonContent = "OK";
+			return JSON.parseObject(jsonContent, actualTypeArg);
+		} catch (Throwable e) {
+			return (T) failMsg(actualTypeArg, e);
 		}
-		return null;
 	}
 
+	private BaseResponse failMsg(Type actualTypeArg, Throwable e) {
+		try {
+			BaseResponse baseResponse = (BaseResponse) Class.forName(actualTypeArg.getTypeName()).newInstance();
+			baseResponse.setSuccess(false);
+			baseResponse.setMessage(e.getMessage());
+			baseResponse.setResultCode(BaseResponse.SystemError);
+			return baseResponse;
+		} catch (Throwable error) {
+			throw new RuntimeException(error);
+		}
+	}
+	
 }

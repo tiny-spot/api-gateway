@@ -6,6 +6,8 @@ public abstract class BaseResponse implements Serializable {
 
 	private static final long serialVersionUID = 4373396524302180959L;
 
+	public static final String SystemError = "500";
+	
 	private Boolean success;
 	private String resultCode;
 	private String message;
