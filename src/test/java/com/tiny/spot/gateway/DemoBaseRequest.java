@@ -1,6 +1,6 @@
 package com.tiny.spot.gateway;
 
-@GatewayAnna("DemoBaseRequest")
+@GatewayAnna("biz.message.del")
 public class DemoBaseRequest extends BaseRequest<DemoBaseResponse>{
 
 	private static final long serialVersionUID = -3090501271751005676L;
